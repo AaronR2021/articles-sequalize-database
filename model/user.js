@@ -1,16 +1,17 @@
-//created model i.e the table 
 const {Sequelize, DataTypes } = require('@sequelize/core');
-const db = require('../config/database');//defination of your orm
-
-const { v4: uuidv4 } = require('uuid');
-const bcrypt = require('bcrypt')
-
-const User = db.define('User', {//use db to create your table=> User is the table name.
-    id: {
+const db = require('../config/database');
+const bcrypt = require('bcrypt');
+const User = db.define('User',
+ {
+    id:{
+        type:DataTypes.INTEGER,
+        autoIncrement:true,
+        primaryKey:true,
+    },
+    email: {
         type: DataTypes.STRING,
-        defaultValue:uuidv4(),
-        primaryKey: true,
         allowNull: false,
+        unique:true,
     },
     username: {
         type: DataTypes.STRING,
@@ -19,29 +20,20 @@ const User = db.define('User', {//use db to create your table=> User is the tabl
     password: {
         type:DataTypes.STRING,
         allowNull: false,
-       
         },
-    age: {
-        type:Sequelize.DataTypes.INTEGER,
-        defaultValue:21      
-        }
 },{
-    timestamps: true,
-    freezeTableName:true,//duplicates table in changed later*
-    underscored:true,
+    timestamps: false,
     instanceMethods:{
         //validate
         validate: (password)=> {
               return bcrypt.compareSync(password, this.password);
             }
         }
-            
 });
 
-//hash password before saving
 User.beforeCreate((user, options) => {
-
-    return bcrypt.hash(user.password, 10)
+console.log('hashing password')
+    return bcrypt.hash(user.password,10)
         .then(hash => {
             user.password = hash;
         })
@@ -49,18 +41,13 @@ User.beforeCreate((user, options) => {
             throw new Error(); 
         });
 });
-//sync to table/->force not working as expected.* User.sync()
-//db.sync-> syncs all the tabels
-db.sync({drop:true})
-.then((data)=>{console.log('synced')})
-.catch((err)=>{console.log('error syncing',err)})
 
-module.exports = User;
-
-
-/*
-User.create({
-    key:value
+db.sync({alter:true})
+.then(()=>{
+    
+  console.log('______________synced successfully-User')
 })
+.catch((err)=>{
+    console.log('+++++++++++++++++error syncing in User',err)})
 
-*/
+module.exports = User; 
