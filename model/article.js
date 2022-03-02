@@ -1,4 +1,4 @@
-const {Sequelize, DataTypes } = require('@sequelize/core');
+const {DataTypes } = require('@sequelize/core');
 const db = require('../config/database');
 const { v4: uuidv4 } = require('uuid');
 
