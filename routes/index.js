@@ -12,7 +12,12 @@ var router = express.Router();
 router
 .get('/',async function(req,res,next){
   //list 10 recent posts 
-  res.send('user-home-page')
+ // res.send('user-home-page')
+ Article.findAll({attributes:[
+  'title','desc'
+]}).then((data)=>{
+  res.status(200).json({data})
+});
 })
 .post('/signup',async function (req,res,next){
   //sign up
