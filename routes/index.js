@@ -67,7 +67,7 @@ router
       const userJson=user.toJSON()
       const payload={email:userJson.email,username:userJson.username}
       //create jtw token and send
-      var token = jwt.sign(payload,process.env.LOGIN_JWT_SECRET);
+      var token = jwt.sign(payload,"isbSDuniijniuniubsrvkjnIUNJDFSVIJNIinhjdsinviniqq");
       res.status(200).json({success:'successfull login',...payload,token})
     } 
   })

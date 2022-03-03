@@ -5,7 +5,7 @@ module.exports={
         var token=req.headers.authorization;
         try{
             if(token){
-                var payload=await jwt.verify(token,process.env.LOGIN_JWT_SECRET)
+                var payload=await jwt.verify(token,"isbSDuniijniuniubsrvkjnIUNJDFSVIJNIinhjdsinviniqq")
                 req.user=payload;
                 next()
             }
