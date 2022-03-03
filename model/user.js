@@ -66,7 +66,7 @@ const Article = db.define('Article',
         underscored:true
     });
     
-    User.hasMany(Article,{foreignKey:'user_id',allowNull:false})
+    User.hasMany(Article,{foreignKey:'user_id',allowNull:false,onDelete:'CASCADE'})
     Article.belongsTo(User);
 
 
@@ -82,7 +82,7 @@ const Comments = db.define('Comment',
     underscored:true
 });
 
-Article.hasMany(Comments,{foreignKey:"Article_id"})
+Article.hasMany(Comments,{foreignKey:"Article_id",onDelete:'CASCADE'})
 Comments.belongsTo(Article)
 
 

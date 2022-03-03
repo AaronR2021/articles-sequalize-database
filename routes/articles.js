@@ -167,7 +167,7 @@ const user=await User.findOne({where:{
   }}).then((val)=>{
     console.log(val)
     if(val>0){
-      res.status(200).json({success:'sucessfully deleted user'})
+      res.status(200).json({success:'sucessfully deleted article'})
     }
     else{
       res.status(200).json({error:'you dont have permission to delete this article'})
