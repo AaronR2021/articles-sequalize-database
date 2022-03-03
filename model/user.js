@@ -30,20 +30,23 @@ const User = db.define('User',
 
 
 
-User.prototype.validate=function(password){
-    return bcrypt.compare(password,this.password)
-}
+
 User.beforeCreate((user, options) => {
+    console.log('hash+++',user)
     return bcrypt.hash(user.password,10)
         .then(hash => {
-            user.password = hash;
+             console.log('hash',hash)
+            user.password = hash.toString();
         })
         .catch(err => { 
             console.log(err);
             throw new Error(); 
         });
 });
+ User.prototype.validate=function(password){
 
+    return bcrypt.compare(password.toString(),this.password.toString())
+} 
 
 //_______________Article Model_________________________________
 

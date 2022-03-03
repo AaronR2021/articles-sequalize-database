@@ -26,11 +26,11 @@ router
   if(email==''||password==''||username==''){
     res.status(300).json({error:'missing credentials'})
   }
-  
+   console.log(email,password,username)
   //create user
-  User.create({email:email,password,username},{fields:['email','password','username']})
+  User.create({email,password,username},{fields:['email','password','username']})
   .then((data)=>{
-
+    console.log(data,'is data')
     //user created successfully
     const userJson=data.toJSON()
     const payload={email:userJson.email,username:userJson.username}
