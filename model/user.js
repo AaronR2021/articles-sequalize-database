@@ -66,7 +66,7 @@ const Article = db.define('Article',
         underscored:true
     });
     
-    User.hasMany(Article,{foreignKey:'user_id'})
+    User.hasMany(Article,{foreignKey:'user_id',allowNull:false})
     Article.belongsTo(User);
 
 
