@@ -32,10 +32,8 @@ const User = db.define('User',
 
 
 User.beforeCreate((user, options) => {
-    console.log('hash+++',user)
     return bcrypt.hash(user.password,10)
         .then(hash => {
-             console.log('hash',hash)
             user.password = hash.toString();
         })
         .catch(err => { 

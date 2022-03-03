@@ -26,24 +26,22 @@ router
   if(email==''||password==''||username==''){
     res.status(300).json({error:'missing credentials'})
   }
-   console.log(email,password,username)
   //create user
   User.create({email,password,username},{fields:['email','password','username']})
   .then((data)=>{
-    console.log(data,'is data')
     //user created successfully
     const userJson=data.toJSON()
     const payload={email:userJson.email,username:userJson.username}
     //create jtw token and send
     var token = jwt.sign(payload,process.env.LOGIN_JWT_SECRET);
-    res.json({...payload,token})
+    res.status(200).json({...payload,token})
 
   })
   .catch(err=>{
 
     //user already exists
     console.log(err)
-    res.status(500).json({error:'username already exists'})
+    res.status(300).json({error:'username already exists'})
 
   })
 
