@@ -28,7 +28,7 @@ router
   }
   
   //create user
-  User.create({email:email.toLowerCase(),password,username},{fields:['email','password','username']})
+  User.create({email:email,password,username},{fields:['email','password','username']})
   .then((data)=>{
 
     //user created successfully
@@ -42,6 +42,7 @@ router
   .catch(err=>{
 
     //user already exists
+    console.log(err)
     res.status(500).json({error:'username already exists'})
 
   })
