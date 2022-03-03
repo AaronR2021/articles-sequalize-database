@@ -1,4 +1,4 @@
-const {DataTypes } = require('@sequelize/core');
+const {DataTypes, NUMBER } = require('@sequelize/core');
 const db = require('../config/database');
 const bcrypt = require('bcrypt');
 
@@ -59,7 +59,7 @@ const Article = db.define('Article',
         },
         desc:{
             type:DataTypes.STRING,
-        }
+        },
     
     },{
         timestamps: false,
@@ -85,11 +85,6 @@ const Comments = db.define('Comment',
 Article.hasMany(Comments,{foreignKey:"Article_id"})
 Comments.belongsTo(Article)
 
-Article.sync({alter:true})
-.then((data)=>{
-    console.log('______________synced')})
-.catch((err)=>{console.log('error syncing',err)})
-
 
 
 //--------------------likes--------------
@@ -99,28 +94,19 @@ const Likes = db.define('Like',
         type:DataTypes.INTEGER,
         autoIncrement:true,
         primaryKey:true,
-
     },
-    Like:{
-        type:DataTypes.INTEGER,
-        defaultValue:0,
-    },
-
 },{
     timestamps: false,
     freezeTableName:true,
-    instanceMethods:{
-        //decrement
-        decrement: ()=> {
-            return this.Like-1
-          },
-           //increment
-        increment: ()=> {
-            return this.Like+1
-          
-        }
-    }
 });
 User.belongsToMany(Article,{through:Likes})
+Article.belongsToMany(User,{through:Likes})
+
+Likes.sync({alter:true})
+.then((data)=>{
+    console.log('______________synced')})
+.catch((err)=>{console.log('error syncing',err)})
+
+
 
 module.exports = {User,Article,Comments,Likes};

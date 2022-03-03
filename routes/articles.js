@@ -1,5 +1,5 @@
 var express = require('express');
-var {User,Article,Comments}=require('../model/user')
+var {User,Article,Comments,Likes}=require('../model/user')
 const { Sequelize } = require('sequelize');
 const { Op } = require('@sequelize/core');
 const {verifyToken}=require('../middleware/auth')
@@ -17,11 +17,9 @@ router
 const {title,desc}=req.body;
 
 if(title==null||desc==null){
-
   res.status(300).json({
     error:'missing fields'
   })
-
 }
 else{
   User.findOne({
@@ -49,16 +47,131 @@ else{
 }
 
 })
-
 .get('/:userId',async function(req,res,next){
-  //find all articles by this userId.
-const userId=req.params.userId
-})
-.post('/like/:articleId',async function(req,res,next){
-  //like the article
-})
-.post('/unlike/:articleId',async function(req,res,next){
-  //unlike the article
+  //find all articles by a specific userId.
+const userId=req.params.userId;
+  Article.findAll({
+    where:{
+      user_id:userId
+           },
+    attributes: ['title', 'desc'],          
+}).then((article)=>{
+    if(!article){
+      res.status(200).json({length:0})
+    }
+    res.json({article,length:article.length})
+  })
 })
 
+.post('/like/:articleId',verifyToken,async function(req,res,next){
+  //like the article
+  const articleId=req.params.articleId
+
+  Article.findOne({where:{
+    id:articleId
+  }})
+  .then((article)=>{
+    if(!article){
+      res.status(300).json({error:'article no longer exists'})
+    }
+    else{
+      //article found
+      User.findOne({where:{email:req.user.email}}).then((user)=>{
+        if(!user){
+          res.status(300).json({error:'user does not exists/invaid token'})
+        }
+        else{
+          //article and user info in this block
+          Likes.findOne({where:{
+            [Op.and]:{
+              ArticleId:article.id,
+              UserId:user.id
+            }
+          }}).then((activity)=>{
+           console.log(activity)
+           if(!activity){
+            //user has still not liked the post
+             //user of addUser should be capital <===
+            article.addUsers(user).then(()=>{
+            res.status(200).json({success:'you liked the article'})
+                                              })
+          }
+          else{
+          res.status(300).json({error:'you already liked the article'})
+          }
+           
+          })
+         
+        }
+      })
+      
+
+    }
+    
+  })
+
+})
+
+.post('/unlike/:articleId',verifyToken,async function(req,res,next){
+  //unlike the article
+  const articleId=req.params.articleId
+
+  Article.findOne({where:{
+    id:articleId
+  }})
+  .then((article)=>{
+    if(!article){
+      res.status(300).json({error:'article no longer exists'})
+    }
+    else{
+      //article found
+      User.findOne({where:{email:req.user.email}}).then((user)=>{
+        if(!user){
+          res.status(300).json({error:'user does not exists/invaid token'})
+        }
+        else{
+          //article and user info in this block
+          Likes.destroy({where:{
+            [Op.and]:{
+              ArticleId:article.id,
+              UserId:user.id
+            }
+          }}).then(activity=>{
+            if(activity>0){
+              res.status(200).json({success:'unliked post'})
+            }
+            else{
+              res.status(200).json({error:'there is nothing to unlike'})
+            }
+          })
+         
+        }
+      })
+      
+
+    }
+    
+  })
+
+})
+.get('/delete/:articleId',verifyToken,async function(req,res,next){
+const articleId=req.params.articleId
+const user=await User.findOne({where:{
+  email:req.user.email
+}})
+  Article.destroy({where:{
+    [Op.and]:{
+      user_id:user.id,
+      id:articleId
+    }
+  }}).then((val)=>{
+    console.log(val)
+    if(val>0){
+      res.status(200).json({success:'sucessfully deleted user'})
+    }
+    else{
+      res.status(200).json({error:'you dont have permission to delete this article'})
+    }
+  })
+})
 module.exports = router;
