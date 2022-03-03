@@ -8,17 +8,19 @@ var router = express.Router();
 
 /* CRUD OPERATION */
 router
-.get('/',async function(req,res,next){
- const user=await User.create({
-    email:'aaron@final.com',
-    username:'aaronR',
-    password:'test113'
-  },{})
-console.log(user.toJSON())
+.post('/create',async function(req,res,next){
+//accept jwt token find the user id from its email<== for that user{} create article
+const {title,desc}=req.body;
 })
-.post('/login',async function(req,res,next){
-  const {email,password}=req.body;
+.get('/:userId',async function(req,res,next){
+  //find all articles by this userId.
+const userId=req.params.userId
 })
-.post('/signup',async function(req,res,next){})
+.post('/like/:articleId',async function(req,res,next){
+  //like the article
+})
+.post('/unlike/:articleId',async function(req,res,next){
+  //unlike the article
+})
 
 module.exports = router;

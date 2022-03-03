@@ -8,17 +8,15 @@ var router = express.Router();
 
 /* CRUD OPERATION */
 router
-.get('/',async function(req,res,next){
- const user=await User.create({
-    email:'aaron@final.com',
-    username:'aaronR',
-    password:'test113'
-  },{})
-console.log(user.toJSON())
+.get('/:articleId',async function(req,res,next){
+  //get all comments for that given article id
+  const {articleId}=req.params.articleId;
+
 })
-.post('/login',async function(req,res,next){
-  const {email,password}=req.body;
+.post('/create/:articleId',async function(req,res,next){
+  //get article{} from articleId and add comment to it
+  const {comment}=req.body;
 })
-.post('/signup',async function(req,res,next){})
+
 
 module.exports = router;
