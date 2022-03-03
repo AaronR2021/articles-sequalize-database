@@ -14,7 +14,7 @@ router
   //list 10 recent posts 
  // res.send('user-home-page')
  Article.findAll({attributes:[
-  'title','desc'
+  'title','desc','id'
 ]}).then((data)=>{
   res.status(200).json({data})
 });
@@ -28,7 +28,7 @@ router
   }
   
   //create user
-  User.create({email:email.toLowerCase(),password,username},{fields:['email','password','username','id']})
+  User.create({email:email.toLowerCase(),password,username},{fields:['email','password','username']})
   .then((data)=>{
 
     //user created successfully
