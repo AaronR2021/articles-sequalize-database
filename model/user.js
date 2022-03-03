@@ -26,21 +26,20 @@ const User = db.define('User',
         },
 },{
     timestamps: false,
-    instanceMethods:{
-        //validate
-        validate: (password)=> {
-              return bcrypt.compareSync(password, this.password);
-            }
-        }
 });
 
+
+
+User.prototype.validate=function(password){
+    return bcrypt.compare(password,this.password)
+}
 User.beforeCreate((user, options) => {
-console.log('hashing password')
     return bcrypt.hash(user.password,10)
         .then(hash => {
             user.password = hash;
         })
         .catch(err => { 
+            console.log(err);
             throw new Error(); 
         });
 });

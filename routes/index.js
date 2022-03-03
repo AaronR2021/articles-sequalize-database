@@ -1,5 +1,6 @@
 var express = require('express');
-var {User,Article,Comments}=require('../model/user')
+var {User,Article,Comments}=require('../model/user');
+var jwt = require('jsonwebtoken');
 
 const { Sequelize } = require('sequelize');
 const { Op } = require('@sequelize/core');
@@ -14,11 +15,69 @@ router
 })
 .post('/signup',async function (req,res,next){
   //sign up
-  const {email,password,username}=req.body;
+  let {email,password,username}=req.body;
+  //validate
+  if(email==''||password==''||username==''){
+    res.status(300).json({error:'missing credentials'})
+  }
+  
+  //create user
+  User.create({email:email.toLowerCase(),password,username},{fields:['email','password','username']})
+  .then((data)=>{
+
+    //user created successfully
+    const userJson=data.toJSON()
+    console.log('userJson',userJson);
+    const payload={email:userJson.email,username:userJson.username}
+    console.log('payload__________',payload);
+    //create jtw token and send
+    var token = jwt.sign(payload,process.env.LOGIN_JWT_SECRET);
+    console.log(token,'is the token___________')
+    res.json({...payload,token})
+
+  })
+  .catch(err=>{
+
+    //user already exists
+    res.status(500).json({error:'username already exists'})
+
+  })
+
 })
 .post('/login',async function(req,res,next){
   //login with credentials
+
+  //get credentials
   const {email,password}=req.body;
+  //check email exists
+  User.findOne({where:{email:email}})
+  .then(async function(user){
+
+       console.log(user)
+       
+
+    if(!user){
+      console.log('user does not exist__',email,password)
+      res.status(300).json({error:'user not found'})
+    }
+    else if( ! await user.validate(password)){
+      console.log('incorect password__',email,password)
+      res.status(300).json({error:'incorrect password'})
+    }
+    else{
+      //user created successfully
+      const userJson=user.toJSON()
+      console.log('userJson',userJson);
+      const payload={email:userJson.email,username:userJson.username}
+      console.log('payload__________',payload);
+      //create jtw token and send
+      var token = jwt.sign(payload,process.env.LOGIN_JWT_SECRET);
+      console.log(token,'is the token___________')
+      res.status(200).json({success:'successfull login',...payload,token})
+    } 
+  })
+
+  //send back token with email and username
 
 })
 
