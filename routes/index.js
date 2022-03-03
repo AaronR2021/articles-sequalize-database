@@ -19,7 +19,7 @@ router
   res.status(200).json({data})
 });
 })
-.post('/signup',async function (req,res,next){
+.post('/signups',async function (req,res,next){
   //sign up
   let {email,password,username}=req.body;
   //validate
