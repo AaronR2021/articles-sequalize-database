@@ -1,7 +1,10 @@
-const {Sequelize, DataTypes } = require('@sequelize/core');
+const {DataTypes } = require('@sequelize/core');
 const db = require('../config/database');
 const bcrypt = require('bcrypt');
+
+//_______________User Model_________________________________
 const User = db.define('User',
+
  {
     id:{
         type:DataTypes.INTEGER,
@@ -42,12 +45,83 @@ console.log('hashing password')
         });
 });
 
-db.sync({alter:true})
-.then(()=>{
-    
-  console.log('______________synced successfully-User')
-})
-.catch((err)=>{
-    console.log('+++++++++++++++++error syncing in User',err)})
 
-module.exports = User; 
+//_______________Article Model_________________________________
+
+const Article = db.define('Article',
+     {
+        id:{
+            type:DataTypes.INTEGER,
+            autoIncrement:true,
+            primaryKey:true,
+        },
+        title:{
+            type:DataTypes.STRING,
+        },
+        desc:{
+            type:DataTypes.STRING,
+        }
+    
+    },{
+        timestamps: false,
+        underscored:true
+    });
+    
+    User.hasMany(Article,{foreignKey:'user_id'})
+    Article.belongsTo(User);
+
+
+//________________________Comments_______________________________
+
+const Comments = db.define('Comment',
+ {
+    comment:{
+        type:DataTypes.STRING,
+    }
+},{
+    timestamps: false,
+    underscored:true
+});
+
+Article.hasMany(Comments,{foreignKey:"Article_id"})
+Comments.belongsTo(Article)
+
+Article.sync({alter:true})
+.then((data)=>{
+    console.log('______________synced')})
+.catch((err)=>{console.log('error syncing',err)})
+
+
+
+//--------------------likes--------------
+const Likes = db.define('Like',
+ {
+    LikeId:{
+        type:DataTypes.INTEGER,
+        autoIncrement:true,
+        primaryKey:true,
+
+    },
+    Like:{
+        type:DataTypes.INTEGER,
+        defaultValue:0,
+    },
+
+},{
+    timestamps: false,
+    freezeTableName:true,
+    instanceMethods:{
+        //decrement
+        decrement: ()=> {
+            return this.Like-1
+          },
+           //increment
+        increment: ()=> {
+            return this.Like+1
+          
+        }
+    }
+});
+User.belongsToMany(Article,{through:Likes})
+
+module.exports = {User,Article,Comments,Likes};

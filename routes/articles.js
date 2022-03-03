@@ -9,17 +9,16 @@ var router = express.Router();
 /* CRUD OPERATION */
 router
 .get('/',async function(req,res,next){
-  //list 10 recent posts 
-  res.send('user-home-page')
-})
-.post('/signup',async function (req,res,next){
-  //sign up
-  const {email,password,username}=req.body;
+ const user=await User.create({
+    email:'aaron@final.com',
+    username:'aaronR',
+    password:'test113'
+  },{})
+console.log(user.toJSON())
 })
 .post('/login',async function(req,res,next){
-  //login with credentials
   const {email,password}=req.body;
-
 })
+.post('/signup',async function(req,res,next){})
 
 module.exports = router;
