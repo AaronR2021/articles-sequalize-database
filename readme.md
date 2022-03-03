@@ -23,7 +23,7 @@ finds all articles for that specific user
 TOKEN REQUIRED
 likes the article
 
-- post "/articles/unlikes/:articleId"
+- post "/articles/unlike/:articleId"
 TOKEN REQUIRED
 unlikes the article
 

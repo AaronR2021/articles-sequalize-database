@@ -28,9 +28,6 @@ const User = db.define('User',
     timestamps: false,
 });
 
-
-
-
 User.beforeCreate((user, options) => {
     return bcrypt.hash(user.password,10)
         .then(hash => {

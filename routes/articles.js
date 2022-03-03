@@ -49,7 +49,7 @@ const userId=req.params.userId;
     where:{
       user_id:userId
            },
-    attributes: ['title', 'desc'],          
+            
 }).then((article)=>{
     if(!article){
       res.status(200).json({length:0})
@@ -169,7 +169,7 @@ const user=await User.findOne({where:{
     where:{
     article_id:articleid,
         },
-    attributes: ['comment'],          
+             
 }).then(data=>{
   res.status(200).json({data})
 })

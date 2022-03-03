@@ -28,7 +28,7 @@ router
   }
   
   //create user
-  User.create({email:email.toLowerCase(),password,username},{fields:['email','password','username']})
+  User.create({email:email.toLowerCase(),password,username},{fields:['email','password','username','id']})
   .then((data)=>{
 
     //user created successfully
