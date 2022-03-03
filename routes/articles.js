@@ -174,4 +174,16 @@ const user=await User.findOne({where:{
     }
   })
 })
+.get('/comments/:articleId',async function(req,res,next){
+  //get all comments for that given article id
+  const articleid=req.params.articleId;
+  Comments.findAll({
+    where:{
+    article_id:articleid,
+        },
+    attributes: ['comment'],          
+}).then(data=>{
+  res.status(200).json({data})
+})
+})
 module.exports = router;
