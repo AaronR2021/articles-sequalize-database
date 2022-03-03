@@ -1,7 +1,10 @@
-const {Sequelize, DataTypes } = require('@sequelize/core');
+const {DataTypes, NUMBER } = require('@sequelize/core');
 const db = require('../config/database');
 const bcrypt = require('bcrypt');
+
+//_______________User Model_________________________________
 const User = db.define('User',
+
  {
     id:{
         type:DataTypes.INTEGER,
@@ -23,31 +26,87 @@ const User = db.define('User',
         },
 },{
     timestamps: false,
-    instanceMethods:{
-        //validate
-        validate: (password)=> {
-              return bcrypt.compareSync(password, this.password);
-            }
-        }
 });
 
+
+
+User.prototype.validate=function(password){
+    return bcrypt.compare(password,this.password)
+}
 User.beforeCreate((user, options) => {
-console.log('hashing password')
     return bcrypt.hash(user.password,10)
         .then(hash => {
             user.password = hash;
         })
         .catch(err => { 
+            console.log(err);
             throw new Error(); 
         });
 });
 
-db.sync({alter:true})
-.then(()=>{
-    
-  console.log('______________synced successfully-User')
-})
-.catch((err)=>{
-    console.log('+++++++++++++++++error syncing in User',err)})
 
-module.exports = User; 
+//_______________Article Model_________________________________
+
+const Article = db.define('Article',
+     {
+        id:{
+            type:DataTypes.INTEGER,
+            autoIncrement:true,
+            primaryKey:true,
+        },
+        title:{
+            type:DataTypes.STRING,
+        },
+        desc:{
+            type:DataTypes.STRING,
+        },
+    
+    },{
+        timestamps: false,
+        underscored:true
+    });
+    
+    User.hasMany(Article,{foreignKey:'user_id',allowNull:false,onDelete:'CASCADE'})
+    Article.belongsTo(User);
+
+
+//________________________Comments_______________________________
+
+const Comments = db.define('Comment',
+ {
+    comment:{
+        type:DataTypes.STRING,
+    }
+},{
+    timestamps: false,
+    underscored:true
+});
+
+Article.hasMany(Comments,{foreignKey:"Article_id",onDelete:'CASCADE'})
+Comments.belongsTo(Article)
+
+
+
+//--------------------likes--------------
+const Likes = db.define('Like',
+ {
+    LikeId:{
+        type:DataTypes.INTEGER,
+        autoIncrement:true,
+        primaryKey:true,
+    },
+},{
+    timestamps: false,
+    freezeTableName:true,
+});
+User.belongsToMany(Article,{through:Likes})
+Article.belongsToMany(User,{through:Likes})
+
+Likes.sync({alter:true})
+.then((data)=>{
+    console.log('synced')})
+.catch((err)=>{console.log('error syncing',err)})
+
+
+
+module.exports = {User,Article,Comments,Likes};
