@@ -3,11 +3,9 @@ var {Article}=require('../model/user');
 const {verifyToken}=require('../middleware/auth')
 const { Op } = require('@sequelize/core');
 const { Sequelize } = require('sequelize');
-const { Op } = require('@sequelize/core');
 
 var router = express.Router();
 
-/* CRUD OPERATION */
 router
 .post('/create/:articleId',verifyToken,async function(req,res,next){
   //get article{} from articleId and add comment to it

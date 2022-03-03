@@ -3,14 +3,16 @@ var {User,Article,Comments,Likes}=require('../model/user')
 const { Sequelize } = require('sequelize');
 const { Op } = require('@sequelize/core');
 const {verifyToken}=require('../middleware/auth')
-
 var router = express.Router();
 
-/* CRUD OPERATION */
+
 router
 .get('/',verifyToken,(req,res,next)=>{
-  console.log(req.user)
-  res.json({meg:'ee'})
+ Article.findAll({attributes:[
+   'title','desc'
+ ]}).then((data)=>{
+   res.status(200).json({data})
+ })
 })
 .post('/create',verifyToken,async function(req,res,next){
 //accept jwt token find the user id from its email<== for that user{} create article
@@ -88,24 +90,18 @@ const userId=req.params.userId;
               UserId:user.id
             }
           }}).then((activity)=>{
-           console.log(activity)
            if(!activity){
             //user has still not liked the post
              //user of addUser should be capital <===
             article.addUsers(user).then(()=>{
-            res.status(200).json({success:'you liked the article'})
-                                              })
+            res.status(200).json({success:'you liked the article'})                             })
           }
           else{
           res.status(300).json({error:'you already liked the article'})
           }
-           
           })
-         
         }
       })
-      
-
     }
     
   })
@@ -165,7 +161,6 @@ const user=await User.findOne({where:{
       id:articleId
     }
   }}).then((val)=>{
-    console.log(val)
     if(val>0){
       res.status(200).json({success:'sucessfully deleted article'})
     }

@@ -104,7 +104,7 @@ Article.belongsToMany(User,{through:Likes})
 
 Likes.sync({alter:true})
 .then((data)=>{
-    console.log('______________synced')})
+    console.log('synced')})
 .catch((err)=>{console.log('error syncing',err)})
 
 

@@ -28,12 +28,9 @@ router
 
     //user created successfully
     const userJson=data.toJSON()
-    console.log('userJson',userJson);
     const payload={email:userJson.email,username:userJson.username}
-    console.log('payload__________',payload);
     //create jtw token and send
     var token = jwt.sign(payload,process.env.LOGIN_JWT_SECRET);
-    console.log(token,'is the token___________')
     res.json({...payload,token})
 
   })
@@ -52,28 +49,20 @@ router
   const {email,password}=req.body;
   //check email exists
   User.findOne({where:{email:email}})
-  .then(async function(user){
-
-       console.log(user)
-       
+  .then(async function(user){     
 
     if(!user){
-      console.log('user does not exist__',email,password)
       res.status(300).json({error:'user not found'})
     }
     else if( ! await user.validate(password)){
-      console.log('incorect password__',email,password)
       res.status(300).json({error:'incorrect password'})
     }
     else{
       //user created successfully
       const userJson=user.toJSON()
-      console.log('userJson',userJson);
       const payload={email:userJson.email,username:userJson.username}
-      console.log('payload__________',payload);
       //create jtw token and send
       var token = jwt.sign(payload,process.env.LOGIN_JWT_SECRET);
-      console.log(token,'is the token___________')
       res.status(200).json({success:'successfull login',...payload,token})
     } 
   })
