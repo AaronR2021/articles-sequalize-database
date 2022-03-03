@@ -12,7 +12,12 @@ var router = express.Router();
 router
 .get('/',async function(req,res,next){
   //list 10 recent posts 
-  res.send('user-home-page')
+ // res.send('user-home-page')
+ Article.findAll({attributes:[
+  'title','desc','id'
+]}).then((data)=>{
+  res.status(200).json({data})
+});
 })
 .post('/signup',async function (req,res,next){
   //sign up
@@ -30,13 +35,13 @@ router
     const userJson=data.toJSON()
     const payload={email:userJson.email,username:userJson.username}
     //create jtw token and send
-    var token = jwt.sign(payload,process.env.LOGIN_JWT_SECRET);
+    var token = jwt.sign(payload,"isbSDuniijniuniubsrvkjnIUNJDFSVIJNIinhjdsinviniqq");
     res.json({...payload,token})
-
   })
   .catch(err=>{
 
     //user already exists
+    console.log
     res.status(500).json({error:'username already exists'})
 
   })
@@ -62,7 +67,7 @@ router
       const userJson=user.toJSON()
       const payload={email:userJson.email,username:userJson.username}
       //create jtw token and send
-      var token = jwt.sign(payload,process.env.LOGIN_JWT_SECRET);
+      var token = jwt.sign(payload,"isbSDuniijniuniubsrvkjnIUNJDFSVIJNIinhjdsinviniqq");
       res.status(200).json({success:'successfull login',...payload,token})
     } 
   })

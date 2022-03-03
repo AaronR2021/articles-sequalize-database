@@ -7,13 +7,6 @@ var router = express.Router();
 
 
 router
-.get('/',verifyToken,(req,res,next)=>{
- Article.findAll({attributes:[
-   'title','desc'
- ]}).then((data)=>{
-   res.status(200).json({data})
- })
-})
 .post('/create',verifyToken,async function(req,res,next){
 //accept jwt token find the user id from its email<== for that user{} create article
 const {title,desc}=req.body;
@@ -56,7 +49,7 @@ const userId=req.params.userId;
     where:{
       user_id:userId
            },
-    attributes: ['title', 'desc'],          
+            
 }).then((article)=>{
     if(!article){
       res.status(200).json({length:0})
@@ -176,7 +169,7 @@ const user=await User.findOne({where:{
     where:{
     article_id:articleid,
         },
-    attributes: ['comment'],          
+             
 }).then(data=>{
   res.status(200).json({data})
 })

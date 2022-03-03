@@ -1,7 +1,7 @@
 //database config
 const { Sequelize } = require('sequelize');
 //sequalize takes care of pg $ pg-hstore in the background..so dont worry.
-const db = new Sequelize(process.env.DATABASE_NAME,process.env.DATABASE_USERNAME,process.env.DATABASE_PASSWORD,
+const db = new Sequelize("da3iejibesgagc","stenjrhqgfasfe","c26e47d822efe87fde0e53a3ecebd3de6435bc5f7502a713e3b00544b281b776",
  {                      //database name   =>  username    =>    password//
     host: 'ec2-63-35-79-208.eu-west-1.compute.amazonaws.com',
     dialect: 'postgres',//name of the engine
